@@ -5,7 +5,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
-DATABASE_URI = "sqlite:///orders.db"  # При необходимости могу поменять на postgres но для этого нужно будет разворачивать docker контейнер
+DATABASE_URI = os.getenv(
+    "DATABASE_URI"
+) 
 # Интервал проверки новых заявок в секундах
 CHECK_INTERVAL_SECONDS = 10
 SESSIONS_PATH = "./sessions/"
