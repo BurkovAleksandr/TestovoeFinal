@@ -1,6 +1,10 @@
 import telebot
+import accounts_container
 import config
 from telebot.types import Message
+
+from parser import PayloniumParser
+
 
 bot = telebot.TeleBot(config.TELEGRAM_BOT_TOKEN)
 
@@ -23,9 +27,16 @@ def send_notification(user_id: int, order_data: dict):
 
 @bot.message_handler(commands=["start"])
 def send_welcome(message: Message):
-    bot.reply_to(
-        message, f"Бот для мониторинга PayLonium активен. Ваш ID: {message.chat.id}"
-    )
+    valid_sessions = {
+        acc._login: acc.check_session()
+        for acc in accounts_container.accounts
+        if acc.telegram_id == message.chat.id
+    }
+    res_message = f"Бот для мониторинга PayLonium активен. Ваш ID: {message.chat.id}\n"
+    for item in valid_sessions.items():
+        acc_name, valid = item
+        res_message += f"{acc_name}: {"🟢" if valid else "🔴"}\n"
+    bot.reply_to(message, res_message)
 
 
 def start_bot_polling():

@@ -1,6 +1,7 @@
 import time
 from typing import List
 import schedule
+import accounts_container
 from database import SessionLocal, init_db, add_order, order_exists
 from parser import ParsedOrder, PayloniumParser
 from notifier import send_notification, start_bot_polling
@@ -66,10 +67,11 @@ def check_for_new_orders(accounts: List[PayloniumParser]):
 if __name__ == "__main__":
     print("Инициализация...")
     init_db()  # Создаем таблицы в бд
+    accounts_container.accounts = account_fabric()
     start_bot_polling()  # Запускаем бота в отдельном потоке
-    accounts = account_fabric()
+
     schedule.every(config.CHECK_INTERVAL_SECONDS).seconds.do(
-        check_for_new_orders, accounts=accounts
+        check_for_new_orders, accounts=accounts_container.accounts
     )  # Создаем планировщика
 
     print(

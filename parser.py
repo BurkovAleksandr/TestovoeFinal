@@ -7,6 +7,8 @@ from bs4 import BeautifulSoup
 from collections import namedtuple
 import re
 
+from sqlalchemy import true
+
 import config
 
 # URL для входа и для получения заявок
@@ -129,14 +131,21 @@ class PayloniumParser:
             ) as f:
                 cookies = pickle.load(f)
                 self.session.cookies.update(cookies)
-                response = self.session.get(GET_ORDERS_URL, allow_redirects=False)
-                if response.status_code == 200 and "login" not in response.url:
-                    self._is_authenticated = True
+                if self.check_session():
                     print(f"Сессия для {self._login} успешно загружена")
+                    self._is_authenticated = True
                     return True
+
         except FileNotFoundError:
             return False
         print(f"Сессия для {self._login} не валидна")
+        return False
+
+    def check_session(self):
+        response = self.session.get(GET_ORDERS_URL, allow_redirects=False)
+        response.raise_for_status()
+        if response.status_code == 200 and "login" not in response.url:
+            return True
         return False
 
     @autentification_required
