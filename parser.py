@@ -71,9 +71,9 @@ class PayloniumParser:
 
     def authenticate(self):
         """Выполняет вход в систему и сохраняет сессию."""
-
         if self.load_session():
             return
+
         print(f"Выполняю авторизацию для {self._login}")
         login_data = {
             "username": self._login,
@@ -135,7 +135,7 @@ class PayloniumParser:
                     print(f"Сессия для {self._login} успешно загружена")
                     return True
         except FileNotFoundError:
-            pass
+            return False
         print(f"Сессия для {self._login} не валидна")
         return False
 
