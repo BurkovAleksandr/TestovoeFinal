@@ -111,12 +111,18 @@ class PayloniumParser:
         return wrapper
 
     def save_session(self):
+        """Сохранение сессии"""
         with open(
             os.path.join(config.SESSIONS_PATH, f"{self.account_name}.pkl"), "wb"
         ) as f:
             pickle.dump(self.session.cookies, f)
 
     def load_session(self):
+        """Загрузка сессии
+
+        Returns:
+            bool: True если успех, False - если провал
+        """
         try:
             with open(
                 os.path.join(config.SESSIONS_PATH, f"{self.account_name}.pkl"), "rb"
@@ -135,7 +141,11 @@ class PayloniumParser:
 
     @autentification_required
     def get_new_orders(self) -> List[ParsedOrder]:
-        """Получает и парсит новые заявки."""
+        """Получает новые заявки с сайта
+
+        Returns:
+            List[ParsedOrder]: Список заявок
+        """
         try:
             response = self.session.get(GET_ORDERS_URL)
             response.raise_for_status()
