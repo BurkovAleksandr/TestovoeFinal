@@ -28,6 +28,7 @@ pip install -r requirements.txt
 ```
 TELEGRAM_BOT_TOKEN=your_telegram_bot_token
 DATABASE_URI=sqlite:///orders.db
+ACCOUNTS_FILE="accounts.json"
 CHECK_INTERVAL_SECONDS=10
 ```
 
