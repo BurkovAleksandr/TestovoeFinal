@@ -29,10 +29,15 @@ pip install -r requirements.txt
 TELEGRAM_BOT_TOKEN=your_telegram_bot_token
 DATABASE_URI=sqlite:///orders.db
 CHECK_INTERVAL_SECONDS=10
-ACCOUNTS=[{"account_name": "Test", "paylonium_login": "your_login", "paylonium_password": "your_password", "telegram_user_id": 123456789}]
 ```
 
-3. Запуск бота
+3. Создание файла конфигурационного файла для аккаунтов
+
+```
+Скопируйте файл accounts_example.json, переименуйте его в accounts.json и отредактируйте данные внутри
+```
+
+4. Запуск бота
 
 ```bash
 python main.py
