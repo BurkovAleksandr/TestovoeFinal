@@ -1,0 +1,14 @@
+[
+  {
+    "account_name": "Test1",
+    "paylonium_login": "login",
+    "paylonium_password": "password",
+    "telegram_user_id": 1231231231
+  },
+  {
+    "account_name": "Test2",
+    "paylonium_login": "login",
+    "paylonium_password": "password",
+    "telegram_user_id": 1231231231
+  }
+]

@@ -5,19 +5,11 @@ from dotenv import load_dotenv
 
 load_dotenv()
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
-DATABASE_URI = os.getenv(
-    "DATABASE_URI"
-) 
-# Интервал проверки новых заявок в секундах
-CHECK_INTERVAL_SECONDS = 10
+DATABASE_URI = os.getenv("DATABASE_URI")
+
+CHECK_INTERVAL_SECONDS = float(os.getenv("CHECK_INTERVAL_SECONDS"))
 SESSIONS_PATH = "./sessions/"
-# Список аккаунтов для мониторинга
-# ACCOUNTS = [
-#     {
-#         "account_name": "Test",  # Имя для отображения в уведомлениях и БД
-#         "paylonium_login": "testlogin",
-#         "paylonium_password": "testpass",
-#         "telegram_user_id": 12345674,  # ID пользователя в Telegram, куда слать уведомления
-#     },
-# ] ПРИМЕР ПЕРЕМЕННОЙ ОКРУЖЕНИЯ
-ACCOUNTS = json.loads(os.getenv("ACCOUNTS"))
+ACCOUNTS_FILE = os.getenv("ACCOUNTS_FILE")
+
+with open(ACCOUNTS_FILE, encoding="utf-8") as f:
+    ACCOUNTS = json.load(f)
