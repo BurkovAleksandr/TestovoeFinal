@@ -112,10 +112,17 @@ class PayloniumParser:
 
         return wrapper
 
+    def safe_filename(self, name: str) -> str:
+        """Удаляет опасные символы из имени файла"""
+        return re.sub(r"[^A-Za-z0-9_.-]", "_", name)
+
     def save_session(self):
         """Сохранение сессии"""
         with open(
-            os.path.join(config.SESSIONS_PATH, f"{self.account_name}.pkl"), "wb"
+            os.path.join(
+                config.SESSIONS_PATH, f"{self.safe_filename(self.account_name)}.pkl"
+            ),
+            "wb",
         ) as f:
             pickle.dump(self.session.cookies, f)
 
@@ -127,7 +134,10 @@ class PayloniumParser:
         """
         try:
             with open(
-                os.path.join(config.SESSIONS_PATH, f"{self.account_name}.pkl"), "rb"
+                os.path.join(
+                    config.SESSIONS_PATH, f"{self.safe_filename(self.account_name)}.pkl"
+                ),
+                "rb",
             ) as f:
                 cookies = pickle.load(f)
                 self.session.cookies.update(cookies)
