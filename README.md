@@ -30,6 +30,7 @@ TELEGRAM_BOT_TOKEN=your_telegram_bot_token
 DATABASE_URI=sqlite:///orders.db
 ACCOUNTS_FILE="accounts.json"
 CHECK_INTERVAL_SECONDS=10
+GET_ORDERS_URL="https://profile.paylonium.com/p/getnew"
 ```
 
 3. Создание файла конфигурационного файла для аккаунтов

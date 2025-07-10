@@ -14,8 +14,7 @@ import config
 
 # URL для входа и для получения заявок
 LOGIN_URL = "https://profile.paylonium.com/login"
-GET_ORDERS_URL = "https://profile.paylonium.com/p/getnew?serviceId=24"
-
+GET_ORDERS_URL = os.getenv("GET_ORDERS_URL")
 ParsedOrder = namedtuple(
     "ParsedOrder", ["paylonium_id", "datetime", "bank", "amount", "recipient_details"]
 )
@@ -173,7 +172,6 @@ class PayloniumParser:
             cols = row.find_all("td")
             if not cols:
                 continue
-            print(cols)
             pl_id = cols[0].text.strip()
             dt_str = cols[1].text.strip()  # '2025-06-06 18:11:16'
             bank_img = cols[2].find("img")
@@ -212,7 +210,7 @@ class PayloniumParser:
             # with open("test.html", "r", encoding='utf-8') as f:
             #     data = f.read()
 
-            return self._parse_orders_data(data=data)  # Заменить на норм данные
+            return self._parse_orders_data(data=data)
 
         except requests.RequestException as e:
             print(f"Ошибка сети при получении заявок: {e}")
