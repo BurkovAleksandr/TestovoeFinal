@@ -1,6 +1,7 @@
 import functools
 import os
 import pickle
+import time
 from typing import List
 import requests
 from bs4 import BeautifulSoup
@@ -158,6 +159,40 @@ class PayloniumParser:
             return True
         return False
 
+    def _parse_orders_data(self, data: str):
+        soup = BeautifulSoup(data, "lxml")
+        orders = []
+
+        order_rows = (
+            soup.find("table", {"class": "report_table p2p_new"})
+            .find("tbody")
+            .find_all("tr")
+        )
+
+        for row in order_rows:
+            cols = row.find_all("td")
+            if not cols:
+                continue
+            print(cols)
+            pl_id = cols[0].text.strip()
+            dt_str = cols[1].text.strip()  # '2025-06-06 18:11:16'
+            bank_img = cols[2].find("img")
+            bank = bank_img["alt"].strip() if bank_img else cols[2].text.strip()
+            amount_str = cols[3].text.replace(",", ".")
+            amount = float(amount_str)
+            recipient = cols[4].text.strip()
+
+            orders.append(
+                ParsedOrder(
+                    paylonium_id=pl_id,
+                    datetime=dt_str,
+                    bank=bank,
+                    amount=amount,
+                    recipient_details=recipient,
+                )
+            )
+        return orders
+
     @autentification_required
     def get_new_orders(self) -> List[ParsedOrder]:
         """Получает новые заявки с сайта
@@ -173,46 +208,17 @@ class PayloniumParser:
                 self._is_authenticated = False
                 self.authenticate()
                 response = self.session.get(GET_ORDERS_URL)  # Повторный запрос
+            data = response.text
+            # with open("test.html", "r", encoding='utf-8') as f:
+            #     data = f.read()
 
-            soup = BeautifulSoup(response.text, "lxml")
-            orders = []
-
-            order_rows = (
-                soup.find("table", {"class": "report_table p2p_new"})
-                .find("tbody")
-                .find_all("tr")
-            )
-
-            for row in order_rows:
-                cols = row.find_all("td")
-                if not cols:
-                    continue
-
-                pl_id = cols[0].text.strip()
-                dt_str = cols[1].text.strip()  # '2025-06-06 18:11:16'
-                bank_img = cols[2].find("img")
-                bank = bank_img["alt"].strip() if bank_img else cols[2].text.strip()
-                amount_str = cols[3].text.replace(",", ".")
-                amount = float(amount_str)
-                recipient = cols[4].text.strip()
-
-                orders.append(
-                    ParsedOrder(
-                        paylonium_id=pl_id,
-                        datetime=dt_str,
-                        bank=bank,
-                        amount=amount,
-                        recipient_details=recipient,
-                    )
-                )
-
-            return orders
+            return self._parse_orders_data(data=data)  # Заменить на норм данные
 
         except requests.RequestException as e:
             print(f"Ошибка сети при получении заявок: {e}")
             return []
         except Exception as e:
             print(f"Ошибка парсинга страницы: {e}")
-            with open("debug.html", "w", encoding="utf-8") as f:
+            with open(f"debug_{time.time()}.html", "w", encoding="utf-8") as f:
                 f.write(response.text)  # Сохраним соддержимое страницы для отладки
             return []

@@ -32,7 +32,7 @@ def check_for_new_orders(accounts: List[PayloniumParser]):
     db_session = SessionLocal()
     for parser in accounts:
         print(f"--- Проверяю аккаунт: {parser._login} ---")
-
+        
         # Получаем список заявок
         new_orders: list[ParsedOrder] = parser.get_new_orders()
 
