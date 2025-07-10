@@ -32,11 +32,14 @@ def send_welcome(message: Message):
         for acc in accounts_container.accounts
         if acc.telegram_id == message.chat.id
     }
-    res_message = f"Бот для мониторинга PayLonium активен. Ваш ID: {message.chat.id}\n"
-    for item in valid_sessions.items():
-        acc_name, valid = item
-        res_message += f"{acc_name}: {"🟢" if valid else "🔴"}\n"
-    bot.reply_to(message, res_message)
+    if valid_sessions:
+        res_message = (
+            f"Бот для мониторинга PayLonium активен. Ваш ID: {message.chat.id}\n"
+        )
+        for item in valid_sessions.items():
+            acc_name, valid = item
+            res_message += f"{acc_name}: {"🟢" if valid else "🔴"}\n"
+        bot.reply_to(message, res_message)
 
 
 def start_bot_polling():
